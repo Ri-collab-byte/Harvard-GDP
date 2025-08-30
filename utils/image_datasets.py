@@ -65,21 +65,18 @@ class CrossSectional_Dataset(Dataset):
 
         # self.unlabel_flags = np.load(os.path.join(self.data_path, 'unlabel_flags.npz'))['flags']
         self.unlabel_flags = None
-
+                
         if self.data_type == 'label':
+            # Supervised-only: just mark everything as labeled
+            self.unlabel_flags = [0] * len(self.rnflt_data)
+            self.dataset_len = len(self.rnflt_data)
+        
+        elif self.data_type == 'label+unlabel':
             tmp_rnflt = []
             tmp_vf = []
             tmp_flags = []
             for i in range(len(self.unlabel_flags)):
-                if self.unlabel_flags[i] == 0:
-                    tmp_flags.append(0)
-                    tmp_rnflt.append(self.rnflt_data[i])
-            self.rnflt_data = tmp_rnflt
-            self.unlabel_flags = tmp_flags
-            self.dataset_len = len(self.rnflt_data)
-        elif self.data_type == 'label+unlabel':
-            pass
-
+                
     def __len__(self):
         return self.dataset_len
 
@@ -146,6 +143,11 @@ class Longitudinal_Dataset(Dataset):
         self.unlabel_flags = None
 
         if self.data_type == 'label':
+            # Supervised-only: just mark everything as labeled
+            self.unlabel_flags = [0] * len(self.rnflt_data)
+            self.dataset_len = len(self.rnflt_data)
+        
+        elif self.data_type == 'label+unlabel':
             tmp_rnflt = []
             tmp_vf = []
             tmp_flags = []
@@ -153,12 +155,7 @@ class Longitudinal_Dataset(Dataset):
                 if self.unlabel_flags[i] == 0:
                     tmp_flags.append(0)
                     tmp_rnflt.append(self.rnflt_data[i])
-            self.rnflt_data = tmp_rnflt
-            self.unlabel_flags = tmp_flags
-            self.dataset_len = len(self.rnflt_data)
-        elif self.data_type == 'label+unlabel':
-            pass
-
+                    
     def __len__(self):
         return self.dataset_len
 
